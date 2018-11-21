@@ -1,1 +1,13 @@
+http://www.ti.com/tools-software/launchpads/overview.html
+
+http://www.ti.com/product/msp432p401r
+
+https://dev.ti.com/
+
+http://www.ti.com/tool/TI-RTOS-MCU
+
+http://www.ti.com/wireless-connectivity/simplelink-solutions/overview/software.html
+
+http://www.ti.com/microcontrollers/simplelink-mcus/wired-mcus/overview/overview.html
+
 http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSP-EXP432P401R/latest/index_FDS.html
