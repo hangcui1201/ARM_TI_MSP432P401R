@@ -1,0 +1,24 @@
+http://www.ti.com/tools-software/launchpads/overview.html
+
+http://www.ti.com/product/msp432p401r
+
+http://www.ti.com/tool/simplelink-msp432-sdk
+
+https://dev.ti.com/
+
+http://www.ti.com/tool/TI-RTOS-MCU
+
+http://www.ti.com/wireless-connectivity/simplelink-solutions/overview/software.html
+
+http://www.ti.com/microcontrollers/simplelink-mcus/wired-mcus/overview/overview.html
+
+http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSP-EXP432P401R/latest/index_FDS.html
+
+http://dev.ti.com/tirex/content/simplelink_academy_msp432sdk_2_20_01_04/overview.html
+
+
+BOOSTXL-SENSORS_GUI_ET - Flash MSP432 using CCS with CCS/nortos/boostxl_sensors_sensorgui_msp432p401r
+
+bios_6_73_01_01.exe
+
+simplelink_msp432p4_sdk_2_30_00_14.exe
