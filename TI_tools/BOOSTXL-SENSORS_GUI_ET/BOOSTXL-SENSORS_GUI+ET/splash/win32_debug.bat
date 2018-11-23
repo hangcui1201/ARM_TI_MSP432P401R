@@ -1,3 +1,0 @@
-echo Starting GUI Composer Designer...
-copy "%~dp0\\package.debug" "%~dp0\\package.json" /Y
-start ..\\..\\win32\\node-webkit\\nw.exe splash
