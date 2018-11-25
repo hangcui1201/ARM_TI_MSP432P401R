@@ -68,9 +68,11 @@ policies, either expressed or implied, of the FreeBSD Project.
 
 #define SW1       0x02                  // on the left side of the LaunchPad board
 #define SW2       0x10                  // on the right side of the LaunchPad board
+
 #define RED       0x01
 #define GREEN     0x02
 #define BLUE      0x04
+
 // Version 1 is unfriendly
 void Port1_Init(void){
   P1->SEL0 = 0x00;
@@ -79,6 +81,7 @@ void Port1_Init(void){
   P1->REN = 0x12;                         // enable pull resistors on P1.4 and P1.1
   P1->OUT = 0x12;                         // P1.4 and P1.1 are pull-up
 }
+
 uint8_t Port1_Input(void){
   return (P1->IN&0x12);                   // read P1.4,P1.1 inputs
 }
@@ -176,6 +179,7 @@ int main2(void){ uint8_t status;
   }
 }
 
+
 // Version 3 provides for abstraction
 void Switch_Init(void){
   P1->SEL0 &= ~0x12;
@@ -184,6 +188,8 @@ void Switch_Init(void){
   P1->REN |= 0x12;      // 3) enable pull resistors on P1.4 and P1.1
   P1->OUT |= 0x12;      //    P1.4 and P1.1 are pull-up
 }
+
+
 // bit-banded addresses, positive logic
 #define SW2IN ((*((volatile uint8_t *)(0x42098010)))^1)
 #define SW1IN ((*((volatile uint8_t *)(0x42098004)))^1)
