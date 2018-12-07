@@ -1,12 +1,17 @@
 /******************************************************************************
 * Author: Hang Cui
-* Email: cuihang1201@gmail.com
+* Email:cuihang1201@gmail.com
 * University of Illinois at Urbana-Champaign
 *******************************************************************************/
 
-#include <stdint.h>
 #include "msp.h"
-#include "Clock.h"
+#include "..\inc\bump.h"
+#include "..\inc\Clock.h"
+#include "..\inc\SysTick.h"
+#include "..\inc\CortexM.h"
+#include "..\inc\LaunchPad.h"
+#include "..\inc\Motor.h"
+#include "..\inc\TimerA1.h"
 
 /*
  * Switch from left to right - 6, 5, 4, 3, 2, 1
@@ -88,8 +93,6 @@ uint8_t MSP432_Launchpad_SW_Read(void){
   return (P1->IN&0x12);   // Read P1.4,P1.1 inputs
 }
 
-/**************************************************************************/
-
 
 /**************************** External Sensors ****************************/
 
@@ -108,88 +111,107 @@ uint8_t BumpSwitch_Read(void){
 
 /**************************************************************************/
 
+int Running = 1; // 0 means stopped
 
-int main(void){
-
-    uint8_t status;
-
-    Clock_Init48MHz(); // Makes it 48 MHz
-
-    BumpSwitch_Init();
-    MSP432_Launchpad_ColorLED_Init();
-    MSP432_Launchpad_SW_Init();
-
-    while(1){
-
-        status = BumpSwitch_Read(); // Read all the state of all bump switches
-
-        // Pressed on Bump_SW1 - RED
-        if((status&Bump_SW1) == 0x00){
-            MSP432_Launchpad_ColorLED_Write(RED);
-            Clock_Delay1ms(100);
-            MSP432_Launchpad_ColorLED_Write(DARK);
-            Clock_Delay1ms(100);
-        }
-
-        // Pressed on Bump_SW2 - GREEN
-        if((status&Bump_SW2) == 0x00){
-            MSP432_Launchpad_ColorLED_Write(GREEN);
-            Clock_Delay1ms(100);
-            MSP432_Launchpad_ColorLED_Write(DARK);
-            Clock_Delay1ms(100);
-        }
-
-        // Pressed on Bump_SW3 - BLUE
-        if((status&Bump_SW3) == 0x00){
-            MSP432_Launchpad_ColorLED_Write(BLUE);
-            Clock_Delay1ms(100);
-            MSP432_Launchpad_ColorLED_Write(DARK);
-            Clock_Delay1ms(100);
-        }
-
-        // Pressed on Bump_SW4 - RED+GREEN = YELLOW
-        if((status&Bump_SW4) == 0x00){
-            MSP432_Launchpad_ColorLED_Write(RED+GREEN);
-            Clock_Delay1ms(100);
-            MSP432_Launchpad_ColorLED_Write(DARK);
-            Clock_Delay1ms(100);
-        }
-
-        // Pressed on Bump_SW5 - RED+GREEN+BLUE=WHITE
-        if((status&Bump_SW5) == 0x00){
-            MSP432_Launchpad_ColorLED_Write(RED+GREEN+BLUE);
-            Clock_Delay1ms(100);
-            MSP432_Launchpad_ColorLED_Write(DARK);
-            Clock_Delay1ms(100);
-        }
-
-        // Pressed on Bump_SW6 - RED+BLUE=PINK
-        if((status&Bump_SW6) == 0x00){
-            MSP432_Launchpad_ColorLED_Write(RED+BLUE);
-            Clock_Delay1ms(100);
-            MSP432_Launchpad_ColorLED_Write(DARK);
-            Clock_Delay1ms(100);
-        }
-
-    }
-
+void TimePause(uint32_t time){
+  Clock_Delay1ms(time);          // run for a while and stop
+  Motor_Stop();
 }
 
 
+void CheckBumper(void){
+
+  uint8_t status;
+
+  if(Running){
+
+    status = BumpSwitch_Read(); // Read all the state of all bump switches
+
+    // Pressed on Bump_SW1 - RED
+    if((status&Bump_SW1) == 0x00){
+        MSP432_Launchpad_ColorLED_Write(RED);
+        Clock_Delay1ms(100);
+        MSP432_Launchpad_ColorLED_Write(DARK);
+        Clock_Delay1ms(100);
+    }
+
+    // Pressed on Bump_SW2 - GREEN
+    if((status&Bump_SW2) == 0x00){
+        MSP432_Launchpad_ColorLED_Write(GREEN);
+        Clock_Delay1ms(100);
+        MSP432_Launchpad_ColorLED_Write(DARK);
+        Clock_Delay1ms(100);
+    }
+
+    // Pressed on Bump_SW3 - BLUE
+    if((status&Bump_SW3) == 0x00){
+        MSP432_Launchpad_ColorLED_Write(BLUE);
+        Clock_Delay1ms(100);
+        MSP432_Launchpad_ColorLED_Write(DARK);
+        Clock_Delay1ms(100);
+        Motor_Stop();
+        Clock_Delay1ms(1500);
+    }
+
+    // Pressed on Bump_SW4 - RED+GREEN = YELLOW
+    if((status&Bump_SW4) == 0x00){
+        MSP432_Launchpad_ColorLED_Write(RED+GREEN);
+        Clock_Delay1ms(100);
+        MSP432_Launchpad_ColorLED_Write(DARK);
+        Clock_Delay1ms(100);
+        Motor_Stop();
+        Clock_Delay1ms(1500);
+    }
+
+    // Pressed on Bump_SW5 - RED+GREEN+BLUE=WHITE
+    if((status&Bump_SW5) == 0x00){
+        MSP432_Launchpad_ColorLED_Write(RED+GREEN+BLUE);
+        Clock_Delay1ms(100);
+        MSP432_Launchpad_ColorLED_Write(DARK);
+        Clock_Delay1ms(100);
+    }
+
+    // Pressed on Bump_SW6 - RED+BLUE=PINK
+    if((status&Bump_SW6) == 0x00){
+        MSP432_Launchpad_ColorLED_Write(RED+BLUE);
+        Clock_Delay1ms(100);
+        MSP432_Launchpad_ColorLED_Write(DARK);
+        Clock_Delay1ms(100);
+    }
+
+  }
+}
+
+void Pause(void){
+  while(LaunchPad_Input()==0);  // wait for touch
+  while(LaunchPad_Input());     // wait for release
+}
 
 
+int main(void){
+
+  // Use PWM to move the robot
+  // Use TimerA1 to periodically check the bump switches, stopping the robot on a collision
+  Clock_Init48MHz();
+  BumpSwitch_Init();
+  MSP432_Launchpad_ColorLED_Init();
+  MSP432_Launchpad_SW_Init();
+  Motor_Init();
+  TimerA1_Init(&CheckBumper, 50000);  // 10 Hz
+  EnableInterrupts();
+
+  while(1){
+//    Pause();
+    Motor_Forward(6000,6000);  // Motor_Forward(uint16_t leftDuty, uint16_t rightDuty)
+    TimePause(4000);
+    Motor_Backward(6000,6000); // Motor_Backward(uint16_t leftDuty, uint16_t rightDuty)
+    TimePause(3000);
+    Motor_Left(5000,5000);     // Motor_Left(uint16_t leftDuty, uint16_t rightDuty)
+    TimePause(2000);
+    Motor_Right(5000,5000);    // Motor_Right(uint16_t leftDuty, uint16_t rightDuty)
+    TimePause(2000);
+  }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
