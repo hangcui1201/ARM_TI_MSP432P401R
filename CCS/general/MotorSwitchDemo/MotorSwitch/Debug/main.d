@@ -16,13 +16,12 @@ main.obj: C:/ti/ccsv8/ccs_base/arm/include/CMSIS/core_cm4.h
 main.obj: C:/ti/ccsv8/ccs_base/arm/include/CMSIS/cmsis_compiler.h
 main.obj: C:/ti/ccsv8/ccs_base/arm/include/CMSIS/cmsis_ccs.h
 main.obj: C:/ti/ccsv8/ccs_base/arm/include/system_msp432p401r.h
-main.obj: ../../inc/bump.h
-main.obj: ../../inc/Clock.h
-main.obj: ../../inc/SysTick.h
-main.obj: ../../inc/CortexM.h
-main.obj: ../../inc/LaunchPad.h
-main.obj: ../../inc/Motor.h
-main.obj: ../../inc/TimerA1.h
+main.obj: ../bump.h
+main.obj: ../Clock.h
+main.obj: ../SysTick.h
+main.obj: ../CortexM.h
+main.obj: ../Motor.h
+main.obj: ../TimerA1.h
 
 ../main.c: 
 C:/ti/ccsv8/ccs_base/arm/include/msp.h: 
@@ -40,10 +39,9 @@ C:/ti/ccsv8/ccs_base/arm/include/CMSIS/core_cm4.h:
 C:/ti/ccsv8/ccs_base/arm/include/CMSIS/cmsis_compiler.h: 
 C:/ti/ccsv8/ccs_base/arm/include/CMSIS/cmsis_ccs.h: 
 C:/ti/ccsv8/ccs_base/arm/include/system_msp432p401r.h: 
-../../inc/bump.h: 
-../../inc/Clock.h: 
-../../inc/SysTick.h: 
-../../inc/CortexM.h: 
-../../inc/LaunchPad.h: 
-../../inc/Motor.h: 
-../../inc/TimerA1.h: 
+../bump.h: 
+../Clock.h: 
+../SysTick.h: 
+../CortexM.h: 
+../Motor.h: 
+../TimerA1.h: 

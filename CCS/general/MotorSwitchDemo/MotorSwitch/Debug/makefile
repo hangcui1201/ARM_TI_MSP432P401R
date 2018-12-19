@@ -13,9 +13,9 @@ ORDERED_OBJS += \
 "./Bump.obj" \
 "./Clock.obj" \
 "./CortexM.obj" \
-"./LaunchPad.obj" \
 "./Motor.obj" \
 "./PWM.obj" \
+"./SysTick.obj" \
 "./TimerA1.obj" \
 "./main.obj" \
 "./startup_msp432p401r_ccs.obj" \
@@ -163,8 +163,8 @@ motor_front_switch.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "Bump.obj" "Clock.obj" "CortexM.obj" "LaunchPad.obj" "Motor.obj" "PWM.obj" "TimerA1.obj" "main.obj" "startup_msp432p401r_ccs.obj" "system_msp432p401r.obj" 
-	-$(RM) "Bump.d" "Clock.d" "CortexM.d" "LaunchPad.d" "Motor.d" "PWM.d" "TimerA1.d" "main.d" "startup_msp432p401r_ccs.d" "system_msp432p401r.d" 
+	-$(RM) "Bump.obj" "Clock.obj" "CortexM.obj" "Motor.obj" "PWM.obj" "SysTick.obj" "TimerA1.obj" "main.obj" "startup_msp432p401r_ccs.obj" "system_msp432p401r.obj" 
+	-$(RM) "Bump.d" "Clock.d" "CortexM.d" "Motor.d" "PWM.d" "SysTick.d" "TimerA1.d" "main.d" "startup_msp432p401r_ccs.d" "system_msp432p401r.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

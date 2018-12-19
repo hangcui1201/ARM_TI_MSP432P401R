@@ -5,13 +5,12 @@
 *******************************************************************************/
 
 #include "msp.h"
-#include "..\inc\bump.h"
-#include "..\inc\Clock.h"
-#include "..\inc\SysTick.h"
-#include "..\inc\CortexM.h"
-#include "..\inc\LaunchPad.h"
-#include "..\inc\Motor.h"
-#include "..\inc\TimerA1.h"
+#include "bump.h"
+#include "Clock.h"
+#include "SysTick.h"
+#include "CortexM.h"
+#include "Motor.h"
+#include "TimerA1.h"
 
 /*
  * Switch from left to right - 6, 5, 4, 3, 2, 1
@@ -182,10 +181,10 @@ void CheckBumper(void){
   }
 }
 
-void Pause(void){
-  while(LaunchPad_Input()==0);  // wait for touch
-  while(LaunchPad_Input());     // wait for release
-}
+//void Pause(void){
+//  while(LaunchPad_Input()==0);  // wait for touch
+//  while(LaunchPad_Input());     // wait for release
+//}
 
 
 int main(void){

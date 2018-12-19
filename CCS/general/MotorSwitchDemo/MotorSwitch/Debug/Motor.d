@@ -1,6 +1,6 @@
 # FIXED
 
-Motor.obj: C:/Github_Sync/ARM_TI_MSP432P401R/CCS/general/MotorSwitchDemo/inc/Motor.c
+Motor.obj: ../Motor.c
 Motor.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include/stdint.h
 Motor.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include/sys/stdint.h
 Motor.obj: C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include/sys/cdefs.h
@@ -16,10 +16,10 @@ Motor.obj: C:/ti/ccsv8/ccs_base/arm/include/CMSIS/core_cm4.h
 Motor.obj: C:/ti/ccsv8/ccs_base/arm/include/CMSIS/cmsis_compiler.h
 Motor.obj: C:/ti/ccsv8/ccs_base/arm/include/CMSIS/cmsis_ccs.h
 Motor.obj: C:/ti/ccsv8/ccs_base/arm/include/system_msp432p401r.h
-Motor.obj: C:/Github_Sync/ARM_TI_MSP432P401R/CCS/general/MotorSwitchDemo/inc/../inc/CortexM.h
-Motor.obj: C:/Github_Sync/ARM_TI_MSP432P401R/CCS/general/MotorSwitchDemo/inc/../inc/PWM.h
+Motor.obj: ../CortexM.h
+Motor.obj: ../PWM.h
 
-C:/Github_Sync/ARM_TI_MSP432P401R/CCS/general/MotorSwitchDemo/inc/Motor.c: 
+../Motor.c: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include/stdint.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include/sys/stdint.h: 
 C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include/sys/cdefs.h: 
@@ -35,5 +35,5 @@ C:/ti/ccsv8/ccs_base/arm/include/CMSIS/core_cm4.h:
 C:/ti/ccsv8/ccs_base/arm/include/CMSIS/cmsis_compiler.h: 
 C:/ti/ccsv8/ccs_base/arm/include/CMSIS/cmsis_ccs.h: 
 C:/ti/ccsv8/ccs_base/arm/include/system_msp432p401r.h: 
-C:/Github_Sync/ARM_TI_MSP432P401R/CCS/general/MotorSwitchDemo/inc/../inc/CortexM.h: 
-C:/Github_Sync/ARM_TI_MSP432P401R/CCS/general/MotorSwitchDemo/inc/../inc/PWM.h: 
+../CortexM.h: 
+../PWM.h: 
