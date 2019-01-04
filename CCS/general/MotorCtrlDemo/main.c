@@ -1,9 +1,3 @@
-// Lab17_Control.c
-// Runs on MSP432
-// Implementation of the control system.
-// Daniel and Jonathan Valvano
-// September 12, 2017
-
 /* This example accompanies the books
    "Embedded Systems: Introduction to the MSP432 Microcontroller",
        ISBN: 978-1512185676, Jonathan Valvano, copyright (c) 2017
@@ -88,43 +82,10 @@ void IRsampling(void){  // runs at 2000 Hz
   Right = RightConvert(nr);
   ADCflag = 1;           // semaphore
 }
-void LCDClear1(void){
-#if OUTUART
-  UART0_Initprintf();
-  printf("\n\rLab 17 wall follow proportional controller\n\r");
-  printf(" L(mm), C(mm), R(mm), E(mm)\n\r");
-#else
-  Nokia5110_Init();
-  Nokia5110_Clear(); // erase entire display
-  Nokia5110_OutString("17: control");
-  Nokia5110_SetCursor(0,1); Nokia5110_OutString("IR distance");
-  Nokia5110_SetCursor(0,2); Nokia5110_OutString("L= "); Nokia5110_OutSDec(0); Nokia5110_OutString(" mm");
-  Nokia5110_SetCursor(0,3); Nokia5110_OutString("C= "); Nokia5110_OutSDec(0); Nokia5110_OutString(" mm");
-  Nokia5110_SetCursor(0,4); Nokia5110_OutString("R= "); Nokia5110_OutSDec(0); Nokia5110_OutString(" mm");
-  Nokia5110_SetCursor(0,5); Nokia5110_OutString("E= "); Nokia5110_OutSDec(0); Nokia5110_OutString(" mm");
-#endif
-}
-void LCDOut1(void){
-#if OUTUART
-#define USIZE 100
-  static uint32_t Rsum=0,Csum=0,Lsum=0,I=0;
-  static int32_t Esum=0;
-  Lsum +=Left;
-  Csum +=Center;
-  Rsum +=Right;
-  Esum +=Error;
-  I = I+1;
-  if(I==USIZE){
-     printf("%5d, %5d, %5d, %5d\n\r",Lsum/USIZE,Csum/USIZE,Rsum/USIZE,Esum/USIZE);
-     Rsum=0,Csum=0,Lsum=0,Esum=0,I=0;
-  }
-#else
-  Nokia5110_SetCursor(3,2); Nokia5110_OutSDec(Left);
-  Nokia5110_SetCursor(3,3); Nokia5110_OutSDec(Center);
-  Nokia5110_SetCursor(3,4); Nokia5110_OutSDec(Right);
-  Nokia5110_SetCursor(3,5); Nokia5110_OutSDec(Error);
-#endif
-}
+
+
+
+
 #define TOOCLOSE 200
 #define DESIRED 250
 int32_t SetPoint = 250;
@@ -134,6 +95,7 @@ int32_t SetPoint = 250;
 #define SWING 1000
 #define PWMMIN (PWMNOMINAL-SWING)
 #define PWMMAX (PWMNOMINAL+SWING)
+
 void SysTick_Handler(void){ // runs at 100 Hz
   if(Mode){
     if((Left>DESIRED)&&(Right>DESIRED)){
@@ -157,6 +119,7 @@ void SysTick_Handler(void){ // runs at 100 Hz
     ControllerFlag = 1;
   }
 }
+
 void Pause(void){int i;
   while(Bump_Read()){ // wait for release
     Clock_Delay1ms(200); LaunchPad_Output(0); // off
@@ -179,43 +142,9 @@ void Pause(void){int i;
   Mode = 1;
   ControllerFlag = 0;
 }
-// Lab 17 solution with proportional control, distance to wall
-void mainProportialControl(void){
-  uint32_t raw17,raw12,raw16;
-  DisableInterrupts();
-  Clock_Init48MHz();
-  LaunchPad_Init(); // built-in switches and LEDs
-  Bump_Init();   // bump switches
-  TimerA1_Init(&IRsampling,250);    // 2000 Hz sampling
-  Motor_Stop();
-  LCDClear1();
-  Mode = 0;
-  UR = UL = PWMNOMINAL; //initial power
-  ADCflag = ControllerFlag = 0; // semaphores
 
-// prime the filters with some samples
-  ADC0_InitSWTriggerCh17_12_16();   // initialize channels 17,12,16
-  ADC_In17_12_16(&raw17,&raw12,&raw16);  // sample
-  LPF_Init(raw17,64);     // P9.0/channel 17
-  LPF_Init2(raw12,64);    // P4.1/channel 12
-  LPF_Init3(raw16,64);    // P9.1/channel 16
-  SysTick_Init(480000,2); // 100 Hz
-  Pause();
-  EnableInterrupts();
-  while(1){
-    if(Bump_Read()){ // collision
-      Mode = 0;
-      Motor_Stop();
-      Pause();
-    }
-    if(ControllerFlag){ // 100 Hz , not real time
-      LCDOut1();
-      ControllerFlag = 0;
-    }
-  }
-}
 //****************************************************************************
-// incremental speed control from Lab 16
+// incremental speed control
 
 // ------------avg------------
 // Simple math function that returns the average
@@ -382,127 +311,4 @@ void main(void){  // incremental control of constant speed (straight line) using
 
 
 
-//*********************************************************************
-// Lab 17 solution
-// Proportional control, Line follower
-// Not fully tested; needs tuning
-uint8_t LineData;       // direct measure from line sensor
-int32_t Position;      // position in 0.1mm relative to center of line
-int32_t Kp3=3;
-uint32_t Time;
-void LCDClear3(void){
-  Nokia5110_Init();
-  Nokia5110_Clear(); // erase entire display
-  Nokia5110_OutString("17: control");
-  Nokia5110_SetCursor(0,1); Nokia5110_OutString("Line Follow");
-  Nokia5110_SetCursor(0,2); Nokia5110_OutString("D =  "); Nokia5110_OutUDec(0);
-  Nokia5110_SetCursor(0,3); Nokia5110_OutString("P = "); Nokia5110_OutSDec(0);
-  Nokia5110_SetCursor(0,4); Nokia5110_OutString("UR=  "); Nokia5110_OutUDec(0);
-  Nokia5110_SetCursor(0,5); Nokia5110_OutString("UL=  "); Nokia5110_OutUDec(0);
-}
-void LCDOut3(void){
-  Nokia5110_SetCursor(5,2); Nokia5110_OutUDec(LineData);
-  Nokia5110_SetCursor(4,3); Nokia5110_OutSDec(Position);
-  Nokia5110_SetCursor(5,4); Nokia5110_OutUDec(UR);
-  Nokia5110_SetCursor(5,5); Nokia5110_OutUDec(UL);
-}
-int32_t change=0;
-void Controller(void){
-// every 1ms
-//  LEDOUT ^= 0x01;       // toggle P1.0
-//  LEDOUT ^= 0x01;       // toggle P1.0
-  Time = Time + 1;
-  if(Time%10==1){
-    Reflectance_Start(); // start every 10ms
-  }
-  if(Time%10==2){
-    LineData = Reflectance_End(); // finish 1ms later
-    Position = Reflectance_Position(LineData);
-    if(Mode){
-//      change = Kp3*Position; // proportional control
-      if(Position > 0){
-        change = change+100; // incremental control
-      }
-      if(Position < 0){
-        change = change-100;
-      }
-      if(change > SWING)change=SWING;
-      if(change < -SWING)change=-SWING;
 
-      UR = PWMNOMINAL+change;
-      UL = PWMNOMINAL-change; // proportional control
-//      if(UR < (PWMNOMINAL-SWING)) UR = PWMNOMINAL-SWING; // 1000 to 9000
-//      if(UR > (PWMNOMINAL+SWING)) UR = PWMNOMINAL+SWING;
-//      if(UL < (PWMNOMINAL-SWING)) UL = PWMNOMINAL-SWING; // 1000 to 9000
-//      if(UL > (PWMNOMINAL+SWING)) UL = PWMNOMINAL+SWING;
-      Motor_Forward(UL,UR);
-    }
-    ControllerFlag = 1;
-  }
-//  LEDOUT ^= 0x01;       // toggle P1.0
-}
-void Pause3(void){int i;
-  while(Bump_Read()){ // wait for release
-    Clock_Delay1ms(200); LaunchPad_Output(0); // off
-    Clock_Delay1ms(200); LaunchPad_Output(1); // red
-    if(ControllerFlag){ // 100 Hz , not real time
-      LCDOut3();
-      ControllerFlag = 0;
-    }
-  }
-  while(Bump_Read()==0){// wait for touch
-    Clock_Delay1ms(100); LaunchPad_Output(0); // off
-    Clock_Delay1ms(100); LaunchPad_Output(3); // red/green
-    if(ControllerFlag){ // 100 Hz , not real time
-      LCDOut3();
-      ControllerFlag = 0;
-    }
-  }
-  while(Bump_Read()){ // wait for release
-    Clock_Delay1ms(100); LaunchPad_Output(0); // off
-    Clock_Delay1ms(100); LaunchPad_Output(4); // blue
-    if(ControllerFlag){ // 100 Hz , not real time
-      LCDOut3();
-      ControllerFlag = 0;
-    }
-  }
-  for(i=1000;i>100;i=i-200){
-    Clock_Delay1ms(i); LaunchPad_Output(0); // off
-    Clock_Delay1ms(i); LaunchPad_Output(2); // green
-    if(ControllerFlag){ // 100 Hz , not real time
-      LCDOut3();
-      ControllerFlag = 0;
-    }
-  }
-  // restart Jacki
-  UR = UL = PWMNOMINAL;    // reset parameters
-  Mode = 1;
-  ControllerFlag = 0;
-}
-void mainreal(void){
-  DisableInterrupts();
-  Clock_Init48MHz();
-  LaunchPad_Init(); // built-in switches and LEDs
-  Bump_Init();   // bump switches
-  Reflectance_Init();
-  TimerA1_Init(&Controller,500);    // 1000 Hz interrupt, 100 Hz sampling, 100 Hz controller
-  Motor_Stop();
-  LCDClear3();
-  Mode = 0;
-  Time = 0;
-  UR = UL = PWMNOMINAL; // initial power
-  EnableInterrupts();
-  Pause3();
-
-  while(1){
-    if(Bump_Read()){ // collision
-      Mode = 0;
-      Motor_Stop();
-      Pause3();
-    }
-    if(ControllerFlag){ // 100 Hz , not real time
-      LCDOut3();
-      ControllerFlag = 0;
-    }
-  }
-}
