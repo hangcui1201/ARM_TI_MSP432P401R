@@ -59,7 +59,6 @@ policies, either expressed or implied, of the FreeBSD Project.
 #define OUTUART 1
 
 //******************************************************
-// Lab 17 solution, Distance to wall proportional control
 
 volatile uint32_t nr,nc,nl;
 volatile uint32_t ADCflag; // Set every 500us on ADC sample
@@ -71,21 +70,6 @@ int32_t Error;
 int32_t Ki=5;  // integral controller gain
 int32_t Kp=4;  // proportional controller gain
 
-void IRsampling(void){  // runs at 2000 Hz
-  uint32_t raw17,raw12,raw16;
-  ADC_In17_12_16(&raw17,&raw12,&raw16);  // sample
-  nr = LPF_Calc(raw17);  // right is channel 17 P9.0
-  nc = LPF_Calc2(raw12); // center is channel 12, P4.1
-  nl = LPF_Calc3(raw16); // left is channel 16, P9.1
-  Left = LeftConvert(nl);
-  Center = CenterConvert(nc);
-  Right = RightConvert(nr);
-  ADCflag = 1;           // semaphore
-}
-
-
-
-
 #define TOOCLOSE 200
 #define DESIRED 250
 int32_t SetPoint = 250;
@@ -96,54 +80,9 @@ int32_t SetPoint = 250;
 #define PWMMIN (PWMNOMINAL-SWING)
 #define PWMMAX (PWMNOMINAL+SWING)
 
-void SysTick_Handler(void){ // runs at 100 Hz
-  if(Mode){
-    if((Left>DESIRED)&&(Right>DESIRED)){
-      SetPoint = (Left+Right)/2;
-    }else{
-      SetPoint = DESIRED;
-    }
-    if(Left < Right ){
-      Error = Left-SetPoint;
-    }else {
-      Error = SetPoint-Right;
-    }
- //   UR = UR + Ki*Error;      // adjust right motor
-    UR = PWMNOMINAL+Kp*Error; // proportional control
-    UL = PWMNOMINAL-Kp*Error; // proportional control
-    if(UR < (PWMNOMINAL-SWING)) UR = PWMNOMINAL-SWING; // 3,000 to 7,000
-    if(UR > (PWMNOMINAL+SWING)) UR = PWMNOMINAL+SWING;
-    if(UL < (PWMNOMINAL-SWING)) UL = PWMNOMINAL-SWING; // 3,000 to 7,000
-    if(UL > (PWMNOMINAL+SWING)) UL = PWMNOMINAL+SWING;
-    Motor_Forward(UL,UR);
-    ControllerFlag = 1;
-  }
-}
-
-void Pause(void){int i;
-  while(Bump_Read()){ // wait for release
-    Clock_Delay1ms(200); LaunchPad_Output(0); // off
-    Clock_Delay1ms(200); LaunchPad_Output(1); // red
-  }
-  while(Bump_Read()==0){// wait for touch
-    Clock_Delay1ms(100); LaunchPad_Output(0); // off
-    Clock_Delay1ms(100); LaunchPad_Output(3); // red/green
-  }
-  while(Bump_Read()){ // wait for release
-    Clock_Delay1ms(100); LaunchPad_Output(0); // off
-    Clock_Delay1ms(100); LaunchPad_Output(4); // blue
-  }
-  for(i=1000;i>100;i=i-200){
-    Clock_Delay1ms(i); LaunchPad_Output(0); // off
-    Clock_Delay1ms(i); LaunchPad_Output(2); // green
-  }
-  // restart Jacki
-  UR = UL = PWMNOMINAL;    // reset parameters
-  Mode = 1;
-  ControllerFlag = 0;
-}
-
 //****************************************************************************
+
+
 // incremental speed control
 
 // ------------avg------------
@@ -153,6 +92,7 @@ void Pause(void){int i;
 //        length is the number of elements in 'array'
 // Output: the average value of the array
 // Note: overflow is not considered
+
 uint16_t avg(uint16_t *array, int length){
   int i;
   uint32_t sum = 0;
@@ -178,136 +118,137 @@ uint16_t RightTach[TACHBUFF];            // tachometer period of right wheel (nu
 enum TachDirection RightDir;             // direction of right rotation (FORWARD, STOPPED, REVERSE)
 int32_t RightSteps;                      // number of tachometer steps of right wheel (units of 220/360 = 0.61 mm traveled)
 
-void main(void){  // incremental control of constant speed (straight line) using tachometer
+
+void main(void){  // incremental control of constant speed using tachometer
 
     int i = 0;
     Clock_Init48MHz();                     // set system clock to 48 MHz
 
-    #if OUTUART
-      UART0_Initprintf();
-      printf("\n\rLab 17 speed controller\n\r");
-    #else
-      Nokia5110_Init();
-      Nokia5110_Clear();
-      Nokia5110_OutString("Desired(RPM)L     R     Actual (RPM)L     R     Distance(mm)");
-    #endif
-      LaunchPad_Init();
-      Bump_Init();
-      Tachometer_Init();
-      Motor_Init();
-      EnableInterrupts();
+    UART0_Initprintf();
+    printf("\n\rSpeed Controller\n\r");
+    printf("DesiredR= %d, DesiredL= %d\n\r", DesiredR, DesiredL);
 
-#if OUTUART
-  printf("DesiredR= %d, DesiredL= %d\n\r",DesiredR,DesiredL);
-#endif
-  while(1){
-    Motor_Stop();
-    while(Bump_Read() == 0){
+    LaunchPad_Init();
+    Bump_Init();
+    Tachometer_Init();
+    Motor_Init();
+    EnableInterrupts();
 
-#if OUTUART
+    while(1)
+    {
 
-#else
-      // update the screen
-      Nokia5110_SetCursor(1, 1);         // one leading space, second row
-      Nokia5110_OutUDec(DesiredL);
-      Nokia5110_SetCursor(7, 1);         // seven leading spaces, second row
-      Nokia5110_OutUDec(DesiredR);
-#endif
-      if((LaunchPad_Input()&0x01) != 0x00){
-        // Button1 has been pressed
-        DesiredR = DesiredR + 10;
-        if(DesiredR > DESIREDMAX){
-          DesiredR = DESIREDMIN;
+        Motor_Stop();
+
+        while(Bump_Read() == 0)
+        {
+
+            if((LaunchPad_Input()&0x01) != 0x00)
+            {
+                // Button1 has been pressed
+                DesiredR = DesiredR + 10;
+                if(DesiredR > DESIREDMAX){
+                  DesiredR = DESIREDMIN;
+                }
+
+                #if OUTUART
+                    printf("DesiredR= %d, DesiredL= %d\n\r",DesiredR,DesiredL);
+                #endif
+            }
+
+
+            if((LaunchPad_Input()&0x02) != 0x00)
+            {
+
+                // Button2 has been pressed
+                DesiredL = DesiredL + 10;
+
+                if(DesiredL > DESIREDMAX){
+                    DesiredL = DESIREDMIN;
+                }
+
+                #if OUTUART
+                    printf("DesiredR= %d, DesiredL= %d\n\r", DesiredR, DesiredL);
+                #endif
+            }
+
+            // flash the blue LED
+            i = i + 1;
+            LaunchPad_Output((i&0x01)<<2);
+            Clock_Delay1ms(200);               // delay ~0.2 sec at 48 MHz
         }
 
-#if OUTUART
-        printf("DesiredR= %d, DesiredL= %d\n\r",DesiredR,DesiredL);
-#endif
-      }
-      if((LaunchPad_Input()&0x02) != 0x00){
-        // Button2 has been pressed
-        DesiredL = DesiredL + 10;
-        if(DesiredL > DESIREDMAX){
-          DesiredL = DESIREDMIN;
+
+        for(i=0; i<10; i=i+1)
+        {
+          // flash the yellow LED
+          LaunchPad_Output(0x03);
+          Clock_Delay1ms(100);               // delay ~0.1 sec at 48 MHz
+          LaunchPad_Output(0x00);
+          Clock_Delay1ms(100);               // delay ~0.1 sec at 48 MHz
         }
 
-    #if OUTUART
-        printf("DesiredR= %d, DesiredL= %d\n\r",DesiredR,DesiredL);
-    #endif
-        }
-      // flash the blue LED
-      i = i + 1;
-      LaunchPad_Output((i&0x01)<<2);
-      Clock_Delay1ms(200);               // delay ~0.2 sec at 48 MHz
-    }
-    for(i=0; i<10; i=i+1){
-      // flash the yellow LED
-      LaunchPad_Output(0x03);
-      Clock_Delay1ms(100);               // delay ~0.1 sec at 48 MHz
-      LaunchPad_Output(0x00);
-      Clock_Delay1ms(100);               // delay ~0.1 sec at 48 MHz
-    }
-    LaunchPad_Output(0x02);
-    i = 0;
-    while(Bump_Read() == 0){
-      Tachometer_Get(&LeftTach[i], &LeftDir, &LeftSteps, &RightTach[i], &RightDir, &RightSteps);
-      i = i + 1;
-      if(i >= TACHBUFF){
+
+        LaunchPad_Output(0x02);
         i = 0;
-        // (1/tach step/cycles) * (12,000,000 cycles/sec) * (60 sec/min) * (1/360 rotation/step)
-        ActualL = 2000000/avg(LeftTach, TACHBUFF);
-        ActualR = 2000000/avg(RightTach, TACHBUFF);
-        // very simple, very stupid controller
-        if((ActualL > (DesiredL + 3)) && (LeftDuty > 100)){
-          LeftDuty = LeftDuty - 100;
-        }else if((ActualL < (DesiredL - 3)) && (LeftDuty < 14898)){
-          LeftDuty = LeftDuty + 100;
-        }
-        if((ActualR > (DesiredR + 3)) && (RightDuty > 100)){
-          RightDuty = RightDuty - 100;
-        }else if((ActualR < (DesiredR - 3)) && (RightDuty < 14898)){
-          RightDuty = RightDuty + 100;
-        }
-        Motor_Forward(LeftDuty, RightDuty);
-#if OUTUART
-        printf("%5d rpm, %5d rpm, %5d steps, %5d steps\n\r",ActualL,ActualR,LeftSteps,RightSteps);
-#else        // update the screen
-        Nokia5110_SetCursor(1, 3);       // one leading space, fourth row
-        Nokia5110_OutUDec(ActualL);
-        Nokia5110_SetCursor(7, 3);       // seven leading spaces, fourth row
-        Nokia5110_OutUDec(ActualR);
-        Nokia5110_SetCursor(0, 5);       // zero leading spaces, sixth row
 
 
-        if(LeftSteps < 0){
-          Nokia5110_OutChar('-');
-          Nokia5110_OutUDec((-1*LeftSteps*220)/360);// 70mm diameter wheel; ~220mm circumference divided by 360 steps
-        }else{
-          Nokia5110_OutChar(' ');
-          Nokia5110_OutUDec((LeftSteps*220)/360);// 70mm diameter wheel; ~220mm circumference divided by 360 steps
+        while(Bump_Read() == 0)
+        {
+
+            Tachometer_Get(&LeftTach[i], &LeftDir, &LeftSteps, &RightTach[i], &RightDir, &RightSteps);
+
+            i = i + 1;
+
+            if(i >= TACHBUFF)
+            {
+
+                i = 0;
+                // (1/tach step/cycles) * (12,000,000 cycles/sec) * (60 sec/min) * (1/360 rotation/step)
+                ActualL = 2000000/avg(LeftTach, TACHBUFF);
+                ActualR = 2000000/avg(RightTach, TACHBUFF);
+
+                // very simple, very stupid controller
+                if((ActualL > (DesiredL + 3)) && (LeftDuty > 100)){
+                    LeftDuty = LeftDuty - 100;
+                }else if((ActualL < (DesiredL - 3)) && (LeftDuty < 14898)){
+                    LeftDuty = LeftDuty + 100;
+                }
+
+                if((ActualR > (DesiredR + 3)) && (RightDuty > 100)){
+                    RightDuty = RightDuty - 100;
+                }else if((ActualR < (DesiredR - 3)) && (RightDuty < 14898)){
+                    RightDuty = RightDuty + 100;
+                }
+
+                Motor_Forward(LeftDuty, RightDuty);
+
+
+            #if OUTUART
+                printf("%5d rpm, %5d rpm, %5d steps, %5d steps\n\r", ActualL, ActualR, LeftSteps, RightSteps);
+            #endif
+
+            }
+
+            Clock_Delay1ms(100);               // delay ~0.1 sec at 48 MHz
         }
-        Nokia5110_SetCursor(6, 5);       // six leading spaces, sixth row
-        if(RightSteps < 0){
-          Nokia5110_OutChar('-');
-          Nokia5110_OutUDec((-1*RightSteps*220)/360);// 70mm diameter wheel; ~220mm circumference divided by 360 steps
-        }else{
-          Nokia5110_OutChar(' ');
-          Nokia5110_OutUDec((RightSteps*220)/360);// 70mm diameter wheel; ~220mm circumference divided by 360 steps
+
+        Motor_Stop();
+
+        i = 0;
+        while(Bump_Read() != 0)
+        {
+          // flash the red LED
+          i = i + 1;
+          LaunchPad_Output(i&0x01);
+          Clock_Delay1ms(100);               // delay ~0.1 sec at 48 MHz
         }
-#endif
-      }
-      Clock_Delay1ms(100);               // delay ~0.1 sec at 48 MHz
-    }
-    Motor_Stop();
-    i = 0;
-    while(Bump_Read() != 0){
-      // flash the red LED
-      i = i + 1;
-      LaunchPad_Output(i&0x01);
-      Clock_Delay1ms(100);               // delay ~0.1 sec at 48 MHz
-    }
-  }
-}
+
+
+
+    } // while(1)
+
+
+} //main()
 
 
 
