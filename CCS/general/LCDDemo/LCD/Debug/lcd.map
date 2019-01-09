@@ -1,0 +1,520 @@
+******************************************************************************
+                  TI ARM Linker PC v18.1.4                     
+******************************************************************************
+>> Linked Tue Jan  8 22:54:04 2019
+
+OUTPUT FILE NAME:   <lcd.out>
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 000019f1
+
+
+MEMORY CONFIGURATION
+
+         name            origin    length      used     unused   attr    fill
+----------------------  --------  ---------  --------  --------  ----  --------
+  MAIN                  00000000   00040000  00001c9c  0003e364  R  X
+  INFO                  00200000   00004000  00000000  00004000  R  X
+  SRAM_CODE             01000000   00010000  00003454  0000cbac  RW X
+  SRAM_DATA             20000000   00010000  00003454  0000cbac  RW  
+
+
+SEGMENT ALLOCATION MAP
+
+run origin  load origin   length   init length attrs members
+----------  ----------- ---------- ----------- ----- -------
+00000000    00000000    00001ca0   00001ca0    r-x
+  00000000    00000000    000000e4   000000e4    r-- .intvecs
+  000000e4    000000e4    00001998   00001998    r-x .text
+  00001a7c    00001a7c    000001e8   000001e8    r-- .const
+  00001c68    00001c68    00000038   00000038    r-- .cinit
+20000000    20000000    00003254   00000000    rw-
+  20000000    20000000    00003238   00000000    rw- .bss
+  20003238    20003238    0000001c   00000000    rw- .data
+2000fe00    2000fe00    00000200   00000000    rw-
+  2000fe00    2000fe00    00000200   00000000    rw- .stack
+
+
+SECTION ALLOCATION MAP
+
+ output                                  attributes/
+section   page    origin      length       input sections
+--------  ----  ----------  ----------   ----------------
+.intvecs   0    00000000    000000e4     
+                  00000000    000000e4     startup_msp432p401r_ccs.obj (.intvecs:retain)
+
+.text      0    000000e4    00001998     
+                  000000e4    0000093c     Nokia5110.obj (.text)
+                  00000a20    00000334     system_msp432p401r.obj (.text)
+                  00000d54    00000308     LPF.obj (.text)
+                  0000105c    000002ec     ADC14.obj (.text)
+                  00001348    000001e0     Clock.obj (.text)
+                  00001528    000001e0     main.obj (.text)
+                  00001708    000000a8     TimerA1.obj (.text)
+                  000017b0    0000009c     rtsv7M4_T_le_v4SPD16_eabi.lib : memcpy_t2.asm.obj (.text)
+                  0000184c    0000007c     IRDistance.obj (.text)
+                  000018c8    0000007a     rtsv7M4_T_le_v4SPD16_eabi.lib : memset_t2.asm.obj (.text)
+                  00001942    00000068                                   : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  000019aa    00000002     --HOLE-- [fill = 0]
+                  000019ac    00000044                                   : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit:__TI_auto_init_nobinit_nopinit)
+                  000019f0    00000038                                   : boot_cortex_m.c.obj (.text:_c_int00_noargs:_c_int00_noargs)
+                  00001a28    00000024     CortexM.obj (.text)
+                  00001a4c    0000000e     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  00001a5a    0000000e     startup_msp432p401r_ccs.obj (.text)
+                  00001a68    0000000c     rtsv7M4_T_le_v4SPD16_eabi.lib : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init)
+                  00001a74    00000004                                   : pre_init.c.obj (.text:_system_pre_init)
+                  00001a78    00000004                                   : exit.c.obj (.text:abort:abort)
+
+.const     0    00001a7c    000001e8     
+                  00001a7c    000001e0     Nokia5110.obj (.const:ASCII)
+                  00001c5c    00000008     Nokia5110.obj (.const:.string:Masks)
+
+.cinit     0    00001c68    00000038     
+                  00001c68    0000000d     (.cinit..data.load) [load image, compression = lzss]
+                  00001c75    00000003     --HOLE-- [fill = 0]
+                  00001c78    0000000c     (__TI_handler_table)
+                  00001c84    00000004     --HOLE-- [fill = 0]
+                  00001c88    00000008     (.cinit..bss.load) [load image, compression = zero_init]
+                  00001c90    00000010     (__TI_cinit_table)
+
+.init_array 
+*          0    00000000    00000000     UNINITIALIZED
+
+.binit     0    00000000    00000000     
+
+.bss       0    20000000    00003238     UNINITIALIZED
+                  20000000    00001000     (.common:x)
+                  20001000    00001000     (.common:x2)
+                  20002000    00001000     (.common:x3)
+                  20003000    000001f8     (.common:Screen)
+                  200031f8    00000004     (.common:ADCflag)
+                  200031fc    00000004     (.common:Center)
+                  20003200    00000004     (.common:I1)
+                  20003204    00000004     (.common:LPFSum)
+                  20003208    00000004     (.common:LPFSum2)
+                  2000320c    00000004     (.common:LPFSum3)
+                  20003210    00000004     (.common:Left)
+                  20003214    00000004     (.common:Pt)
+                  20003218    00000004     (.common:Pt2)
+                  2000321c    00000004     (.common:Pt3)
+                  20003220    00000004     (.common:Right)
+                  20003224    00000004     (.common:Size)
+                  20003228    00000004     (.common:TimerA1Task)
+                  2000322c    00000004     (.common:nc)
+                  20003230    00000004     (.common:nl)
+                  20003234    00000004     (.common:nr)
+
+.data      0    20003238    0000001c     UNINITIALIZED
+                  20003238    00000018     Clock.obj (.data)
+                  20003250    00000004     system_msp432p401r.obj (.data)
+
+.stack     0    2000fe00    00000200     UNINITIALIZED
+                  2000fe00    00000004     rtsv7M4_T_le_v4SPD16_eabi.lib : boot_cortex_m.c.obj (.stack)
+                  2000fe04    000001fc     --HOLE--
+
+MODULE SUMMARY
+
+       Module                        code   ro data   rw data
+       ------                        ----   -------   -------
+    .\
+       LPF.obj                       776    0         24640  
+       Nokia5110.obj                 2364   488       1008   
+       system_msp432p401r.obj        820    0         8      
+       ADC14.obj                     748    0         0      
+       main.obj                      480    0         56     
+       Clock.obj                     480    0         48     
+       startup_msp432p401r_ccs.obj   14     228       0      
+       TimerA1.obj                   168    0         8      
+       IRDistance.obj                124    0         0      
+       CortexM.obj                   36     0         0      
+    +--+-----------------------------+------+---------+---------+
+       Total:                        6010   716       25768  
+                                                             
+    C:\ti\ccsv8\tools\compiler\ti-cgt-arm_18.1.4.LTS\lib\rtsv7M4_T_le_v4SPD16_eabi.lib
+       memcpy_t2.asm.obj             156    0         0      
+       memset_t2.asm.obj             122    0         0      
+       copy_decompress_lzss.c.obj    104    0         0      
+       autoinit.c.obj                68     0         0      
+       boot_cortex_m.c.obj           56     0         0      
+       copy_decompress_none.c.obj    14     0         0      
+       copy_zero_init.c.obj          12     0         0      
+       exit.c.obj                    4      0         0      
+       pre_init.c.obj                4      0         0      
+    +--+-----------------------------+------+---------+---------+
+       Total:                        540    0         0      
+                                                             
+       Stack:                        0      0         1024   
+       Linker Generated:             0      49        0      
+    +--+-----------------------------+------+---------+---------+
+       Grand Total:                  6550   765       26792  
+
+
+LINKER GENERATED COPY TABLES
+
+__TI_cinit_table @ 00001c90 records: 2, size/record: 8, table size: 16
+	.data: load addr=00001c68, load size=0000000d bytes, run addr=20003238, run size=0000001c bytes, compression=lzss
+	.bss: load addr=00001c88, load size=00000008 bytes, run addr=20000000, run size=00003238 bytes, compression=zero_init
+
+
+LINKER GENERATED HANDLER TABLE
+
+__TI_handler_table @ 00001c78 records: 3, size/record: 4, table size: 12
+	index: 0, handler: __TI_decompress_lzss
+	index: 1, handler: __TI_decompress_none
+	index: 2, handler: __TI_zero_init
+
+
+GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
+
+address   name                          
+-------   ----                          
+00001159  ADC0_InitSWTriggerCh12        
+000011c9  ADC0_InitSWTriggerCh17_12_16  
+00001279  ADC0_InitSWTriggerCh19        
+0000105d  ADC0_InitSWTriggerCh6         
+000010cd  ADC0_InitSWTriggerCh67        
+00001a67  ADC14_IRQHandler              
+000011a9  ADC_In12                      
+00001239  ADC_In17_12_16                
+000012c9  ADC_In19                      
+000010ad  ADC_In6                       
+00001123  ADC_In67                      
+200031f8  ADCflag                       
+00001a67  AES256_IRQHandler             
+00001a67  BusFault_Handler              
+00001a79  C$$EXIT                       
+00001a67  COMP_E0_IRQHandler            
+00001a67  COMP_E1_IRQHandler            
+20003240  CPMwait                       
+00001a67  CS_IRQHandler                 
+200031fc  Center                        
+00001875  CenterConvert                 
+20003238  ClockFrequency                
+0000149d  Clock_Delay1ms                
+00001473  Clock_Delay1us                
+0000145f  Clock_GetFreq                 
+00001349  Clock_Init48MHz               
+2000324c  Crystalstable                 
+00001a67  DMA_ERR_IRQHandler            
+00001a67  DMA_INT0_IRQHandler           
+00001a67  DMA_INT1_IRQHandler           
+00001a67  DMA_INT2_IRQHandler           
+00001a67  DMA_INT3_IRQHandler           
+00001a67  DebugMon_Handler              
+00001a67  Default_Handler               
+00001a29  DisableInterrupts             
+00001a67  EUSCIA0_IRQHandler            
+00001a67  EUSCIA1_IRQHandler            
+00001a67  EUSCIA2_IRQHandler            
+00001a67  EUSCIA3_IRQHandler            
+00001a67  EUSCIB0_IRQHandler            
+00001a67  EUSCIB1_IRQHandler            
+00001a67  EUSCIB2_IRQHandler            
+00001a67  EUSCIB3_IRQHandler            
+00001a2f  EnableInterrupts              
+00001a3f  EndCritical                   
+00001a67  FLCTL_IRQHandler              
+00001a67  FPU_IRQHandler                
+00001a67  HardFault_Handler             
+20003200  I1                            
+20003248  IFlags                        
+000015d1  IR_Sampling                   
+00001529  LCD_IR_Clear                  
+00001597  LCD_IR_Out                    
+20003204  LPFSum                        
+20003208  LPFSum2                       
+2000320c  LPFSum3                       
+00000e69  LPF_Calc                      
+00000f11  LPF_Calc2                     
+00000fd5  LPF_Calc3                     
+00000da9  LPF_Calc_old                  
+00000e0b  LPF_Init                      
+00000ebd  LPF_Init2                     
+00000f73  LPF_Init3                     
+00000d55  LPF_Init_old                  
+20003210  Left                          
+0000184d  LeftConvert                   
+00001c5c  Masks                         
+00001a67  MemManage_Handler             
+00001a67  NMI_Handler                   
+00000755  Nokia5110_Clear               
+00000997  Nokia5110_ClearBuffer         
+000009cb  Nokia5110_ClrPxl              
+000009c1  Nokia5110_DisplayBuffer       
+00000781  Nokia5110_DrawFullImage       
+0000013b  Nokia5110_Init                
+000001e5  Nokia5110_OutChar             
+00000455  Nokia5110_OutSDec             
+00000225  Nokia5110_OutString           
+00000243  Nokia5110_OutUDec             
+0000068b  Nokia5110_OutUFix1            
+000007b3  Nokia5110_PrintBMP            
+00000719  Nokia5110_SetCursor           
+000009f1  Nokia5110_SetPxl              
+00001a67  PCM_IRQHandler                
+00001a67  PORT1_IRQHandler              
+00001a67  PORT2_IRQHandler              
+00001a67  PORT3_IRQHandler              
+00001a67  PORT4_IRQHandler              
+00001a67  PORT5_IRQHandler              
+00001a67  PORT6_IRQHandler              
+00001a67  PSS_IRQHandler                
+00001a67  PendSV_Handler                
+20003244  Postwait                      
+2000323c  Prewait                       
+20003214  Pt                            
+20003218  Pt2                           
+2000321c  Pt3                           
+00001a67  RTC_C_IRQHandler              
+00001a5b  Reset_Handler                 
+20003220  Right                         
+0000189d  RightConvert                  
+00001a67  SVC_Handler                   
+20003000  Screen                        
+20003224  Size                          
+00001a35  StartCritical                 
+00001a67  SysTick_Handler               
+20003250  SystemCoreClock               
+00000a21  SystemCoreClockUpdate         
+00000c99  SystemInit                    
+00001a67  T32_INT1_IRQHandler           
+00001a67  T32_INT2_IRQHandler           
+00001a67  T32_INTC_IRQHandler           
+00001a67  TA0_0_IRQHandler              
+00001a67  TA0_N_IRQHandler              
+0000177b  TA1_0_IRQHandler              
+0000177b  TA1_0_IRQHandler              
+00001a67  TA1_N_IRQHandler              
+00001a67  TA2_0_IRQHandler              
+00001a67  TA2_N_IRQHandler              
+00001a67  TA3_0_IRQHandler              
+00001a67  TA3_N_IRQHandler              
+0000010f  Testlcdcommandwrite           
+20003228  TimerA1Task                   
+00001709  TimerA1_Init                  
+00001767  TimerA1_Stop                  
+00001a67  UsageFault_Handler            
+4000480c  WDTCTL_SYM                    
+00001a67  WDT_A_IRQHandler              
+00001a47  WaitForInterrupt              
+20010000  __STACK_END                   
+00000200  __STACK_SIZE                  
+00001c90  __TI_CINIT_Base               
+00001ca0  __TI_CINIT_Limit              
+00001c78  __TI_Handler_Table_Base       
+00001c84  __TI_Handler_Table_Limit      
+000019ad  __TI_auto_init_nobinit_nopinit
+00001943  __TI_decompress_lzss          
+00001a4d  __TI_decompress_none          
+ffffffff  __TI_pprof_out_hndl           
+ffffffff  __TI_prof_data_size           
+ffffffff  __TI_prof_data_start          
+00000000  __TI_static_base__            
+00001a69  __TI_zero_init                
+000018c9  __aeabi_memclr                
+000018c9  __aeabi_memclr4               
+000018c9  __aeabi_memclr8               
+000017b1  __aeabi_memcpy                
+000017b1  __aeabi_memcpy4               
+000017b1  __aeabi_memcpy8               
+000018cb  __aeabi_memset                
+000018cb  __aeabi_memset4               
+000018cb  __aeabi_memset8               
+ffffffff  __binit__                     
+ffffffff  __c_args__                    
+UNDEFED   __mpu_init                    
+2000fe00  __stack                       
+000019f1  _c_int00_noargs               
+UNDEFED   _system_post_cinit            
+00001a75  _system_pre_init              
+00001a79  abort                         
+ffffffff  binit                         
+00001465  delay                         
+00000000  interruptVectors              
+00001627  main                          
+000017b1  memcpy                        
+000018d1  memset                        
+2000322c  nc                            
+20003230  nl                            
+20003234  nr                            
+20000000  x                             
+20001000  x2                            
+20002000  x3                            
+
+
+GLOBAL SYMBOLS: SORTED BY Symbol Address 
+
+address   name                          
+-------   ----                          
+00000000  __TI_static_base__            
+00000000  interruptVectors              
+0000010f  Testlcdcommandwrite           
+0000013b  Nokia5110_Init                
+000001e5  Nokia5110_OutChar             
+00000200  __STACK_SIZE                  
+00000225  Nokia5110_OutString           
+00000243  Nokia5110_OutUDec             
+00000455  Nokia5110_OutSDec             
+0000068b  Nokia5110_OutUFix1            
+00000719  Nokia5110_SetCursor           
+00000755  Nokia5110_Clear               
+00000781  Nokia5110_DrawFullImage       
+000007b3  Nokia5110_PrintBMP            
+00000997  Nokia5110_ClearBuffer         
+000009c1  Nokia5110_DisplayBuffer       
+000009cb  Nokia5110_ClrPxl              
+000009f1  Nokia5110_SetPxl              
+00000a21  SystemCoreClockUpdate         
+00000c99  SystemInit                    
+00000d55  LPF_Init_old                  
+00000da9  LPF_Calc_old                  
+00000e0b  LPF_Init                      
+00000e69  LPF_Calc                      
+00000ebd  LPF_Init2                     
+00000f11  LPF_Calc2                     
+00000f73  LPF_Init3                     
+00000fd5  LPF_Calc3                     
+0000105d  ADC0_InitSWTriggerCh6         
+000010ad  ADC_In6                       
+000010cd  ADC0_InitSWTriggerCh67        
+00001123  ADC_In67                      
+00001159  ADC0_InitSWTriggerCh12        
+000011a9  ADC_In12                      
+000011c9  ADC0_InitSWTriggerCh17_12_16  
+00001239  ADC_In17_12_16                
+00001279  ADC0_InitSWTriggerCh19        
+000012c9  ADC_In19                      
+00001349  Clock_Init48MHz               
+0000145f  Clock_GetFreq                 
+00001465  delay                         
+00001473  Clock_Delay1us                
+0000149d  Clock_Delay1ms                
+00001529  LCD_IR_Clear                  
+00001597  LCD_IR_Out                    
+000015d1  IR_Sampling                   
+00001627  main                          
+00001709  TimerA1_Init                  
+00001767  TimerA1_Stop                  
+0000177b  TA1_0_IRQHandler              
+0000177b  TA1_0_IRQHandler              
+000017b1  __aeabi_memcpy                
+000017b1  __aeabi_memcpy4               
+000017b1  __aeabi_memcpy8               
+000017b1  memcpy                        
+0000184d  LeftConvert                   
+00001875  CenterConvert                 
+0000189d  RightConvert                  
+000018c9  __aeabi_memclr                
+000018c9  __aeabi_memclr4               
+000018c9  __aeabi_memclr8               
+000018cb  __aeabi_memset                
+000018cb  __aeabi_memset4               
+000018cb  __aeabi_memset8               
+000018d1  memset                        
+00001943  __TI_decompress_lzss          
+000019ad  __TI_auto_init_nobinit_nopinit
+000019f1  _c_int00_noargs               
+00001a29  DisableInterrupts             
+00001a2f  EnableInterrupts              
+00001a35  StartCritical                 
+00001a3f  EndCritical                   
+00001a47  WaitForInterrupt              
+00001a4d  __TI_decompress_none          
+00001a5b  Reset_Handler                 
+00001a67  ADC14_IRQHandler              
+00001a67  AES256_IRQHandler             
+00001a67  BusFault_Handler              
+00001a67  COMP_E0_IRQHandler            
+00001a67  COMP_E1_IRQHandler            
+00001a67  CS_IRQHandler                 
+00001a67  DMA_ERR_IRQHandler            
+00001a67  DMA_INT0_IRQHandler           
+00001a67  DMA_INT1_IRQHandler           
+00001a67  DMA_INT2_IRQHandler           
+00001a67  DMA_INT3_IRQHandler           
+00001a67  DebugMon_Handler              
+00001a67  Default_Handler               
+00001a67  EUSCIA0_IRQHandler            
+00001a67  EUSCIA1_IRQHandler            
+00001a67  EUSCIA2_IRQHandler            
+00001a67  EUSCIA3_IRQHandler            
+00001a67  EUSCIB0_IRQHandler            
+00001a67  EUSCIB1_IRQHandler            
+00001a67  EUSCIB2_IRQHandler            
+00001a67  EUSCIB3_IRQHandler            
+00001a67  FLCTL_IRQHandler              
+00001a67  FPU_IRQHandler                
+00001a67  HardFault_Handler             
+00001a67  MemManage_Handler             
+00001a67  NMI_Handler                   
+00001a67  PCM_IRQHandler                
+00001a67  PORT1_IRQHandler              
+00001a67  PORT2_IRQHandler              
+00001a67  PORT3_IRQHandler              
+00001a67  PORT4_IRQHandler              
+00001a67  PORT5_IRQHandler              
+00001a67  PORT6_IRQHandler              
+00001a67  PSS_IRQHandler                
+00001a67  PendSV_Handler                
+00001a67  RTC_C_IRQHandler              
+00001a67  SVC_Handler                   
+00001a67  SysTick_Handler               
+00001a67  T32_INT1_IRQHandler           
+00001a67  T32_INT2_IRQHandler           
+00001a67  T32_INTC_IRQHandler           
+00001a67  TA0_0_IRQHandler              
+00001a67  TA0_N_IRQHandler              
+00001a67  TA1_N_IRQHandler              
+00001a67  TA2_0_IRQHandler              
+00001a67  TA2_N_IRQHandler              
+00001a67  TA3_0_IRQHandler              
+00001a67  TA3_N_IRQHandler              
+00001a67  UsageFault_Handler            
+00001a67  WDT_A_IRQHandler              
+00001a69  __TI_zero_init                
+00001a75  _system_pre_init              
+00001a79  C$$EXIT                       
+00001a79  abort                         
+00001c5c  Masks                         
+00001c78  __TI_Handler_Table_Base       
+00001c84  __TI_Handler_Table_Limit      
+00001c90  __TI_CINIT_Base               
+00001ca0  __TI_CINIT_Limit              
+20000000  x                             
+20001000  x2                            
+20002000  x3                            
+20003000  Screen                        
+200031f8  ADCflag                       
+200031fc  Center                        
+20003200  I1                            
+20003204  LPFSum                        
+20003208  LPFSum2                       
+2000320c  LPFSum3                       
+20003210  Left                          
+20003214  Pt                            
+20003218  Pt2                           
+2000321c  Pt3                           
+20003220  Right                         
+20003224  Size                          
+20003228  TimerA1Task                   
+2000322c  nc                            
+20003230  nl                            
+20003234  nr                            
+20003238  ClockFrequency                
+2000323c  Prewait                       
+20003240  CPMwait                       
+20003244  Postwait                      
+20003248  IFlags                        
+2000324c  Crystalstable                 
+20003250  SystemCoreClock               
+2000fe00  __stack                       
+20010000  __STACK_END                   
+4000480c  WDTCTL_SYM                    
+ffffffff  __TI_pprof_out_hndl           
+ffffffff  __TI_prof_data_size           
+ffffffff  __TI_prof_data_start          
+ffffffff  __binit__                     
+ffffffff  __c_args__                    
+ffffffff  binit                         
+UNDEFED   __mpu_init                    
+UNDEFED   _system_post_cinit            
+
+[172 symbols]

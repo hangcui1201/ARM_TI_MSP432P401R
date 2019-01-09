@@ -9,6 +9,7 @@
 #include "ADC14.h"
 #include "TimerA1.h"
 #include "Tachometer.h"
+#include "TA3InputCapture.h"
 
 // Simple math function that returns the average value of an array.
 // Input: an array of 16-bit unsigned numbers
@@ -51,8 +52,8 @@ uint16_t DesiredR = 100;                 // desired rpm
 uint16_t ActualL;                        // actual rpm
 uint16_t ActualR;                        // actual rpm
 
-uint16_t LeftDuty = 3750;                // duty cycle of left wheel (0 to 14,998)
-uint16_t RightDuty = 3750;               // duty cycle of right wheel (0 to 14,998)
+int16_t u_L = 0;
+int16_t u_R = 0;
 
 #define TACHBUFF 10                      // number of elements in tachometer array
 
@@ -102,16 +103,16 @@ void main(void){  // incremental control of constant speed using tachometer
                 ErrSumL = ErrSumL_pre + 0.0005 * (ErrL + ErrL_pre);  // called every one millisecond
                 ErrSumR = ErrSumR_pre + 0.0005 * (ErrR + ErrR_pre);  // called every one millisecond
 
-                LeftDuty = Kp_L * ErrL + Ki_L * ErrSumL;
-                RightDuty = Kp_R * ErrR + Ki_R * ErrSumR;
+                u_L = Kp_L * ErrL + Ki_L * ErrSumL;
+                u_R = Kp_R * ErrR + Ki_R * ErrSumR;
 
-                if(LeftDuty >= 14000){
+                if((u_L >= 10) || (u_L <= -10)){
                     ErrSumL = ErrSumL_pre;
                 }else{
                     ErrSumL_pre = ErrSumL;
                 }
 
-                if(RightDuty >= 14000){
+                if((u_R >= 10) || (u_R <= -10)){
                     ErrSumR = ErrSumR_pre;
                 }else{
                     ErrSumR_pre = ErrSumR;
@@ -120,7 +121,8 @@ void main(void){  // incremental control of constant speed using tachometer
                 ErrL_pre = ErrL;
                 ErrR_pre = ErrR;
 
-                Motor_Forward(LeftDuty, RightDuty);
+                setMotorPWM_L(u_L);
+                setMotorPWN_R(u_R);
 
                 printf("%5d rpm, %5d rpm, %5d steps, %5d steps\n\r", ActualL, ActualR, LeftSteps, RightSteps);
 
