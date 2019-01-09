@@ -10,10 +10,17 @@ CMD_SRCS += \
 
 C_SRCS += \
 ../ADC14.c \
+../Bump.c \
 ../Clock.c \
 ../CortexM.c \
+../IRDistance.c \
+../LPF.c \
+../LaunchPad.c \
 ../Motor.c \
+../Nokia5110.c \
 ../PWM.c \
+../Reflectance.c \
+../SysTickInts.c \
 ../TA3InputCapture.c \
 ../Tachometer.c \
 ../TimerA1.c \
@@ -24,10 +31,17 @@ C_SRCS += \
 
 C_DEPS += \
 ./ADC14.d \
+./Bump.d \
 ./Clock.d \
 ./CortexM.d \
+./IRDistance.d \
+./LPF.d \
+./LaunchPad.d \
 ./Motor.d \
+./Nokia5110.d \
 ./PWM.d \
+./Reflectance.d \
+./SysTickInts.d \
 ./TA3InputCapture.d \
 ./Tachometer.d \
 ./TimerA1.d \
@@ -38,10 +52,17 @@ C_DEPS += \
 
 OBJS += \
 ./ADC14.obj \
+./Bump.obj \
 ./Clock.obj \
 ./CortexM.obj \
+./IRDistance.obj \
+./LPF.obj \
+./LaunchPad.obj \
 ./Motor.obj \
+./Nokia5110.obj \
 ./PWM.obj \
+./Reflectance.obj \
+./SysTickInts.obj \
 ./TA3InputCapture.obj \
 ./Tachometer.obj \
 ./TimerA1.obj \
@@ -52,10 +73,17 @@ OBJS += \
 
 OBJS__QUOTED += \
 "ADC14.obj" \
+"Bump.obj" \
 "Clock.obj" \
 "CortexM.obj" \
+"IRDistance.obj" \
+"LPF.obj" \
+"LaunchPad.obj" \
 "Motor.obj" \
+"Nokia5110.obj" \
 "PWM.obj" \
+"Reflectance.obj" \
+"SysTickInts.obj" \
 "TA3InputCapture.obj" \
 "Tachometer.obj" \
 "TimerA1.obj" \
@@ -66,10 +94,17 @@ OBJS__QUOTED += \
 
 C_DEPS__QUOTED += \
 "ADC14.d" \
+"Bump.d" \
 "Clock.d" \
 "CortexM.d" \
+"IRDistance.d" \
+"LPF.d" \
+"LaunchPad.d" \
 "Motor.d" \
+"Nokia5110.d" \
 "PWM.d" \
+"Reflectance.d" \
+"SysTickInts.d" \
 "TA3InputCapture.d" \
 "Tachometer.d" \
 "TimerA1.d" \
@@ -80,10 +115,17 @@ C_DEPS__QUOTED += \
 
 C_SRCS__QUOTED += \
 "../ADC14.c" \
+"../Bump.c" \
 "../Clock.c" \
 "../CortexM.c" \
+"../IRDistance.c" \
+"../LPF.c" \
+"../LaunchPad.c" \
 "../Motor.c" \
+"../Nokia5110.c" \
 "../PWM.c" \
+"../Reflectance.c" \
+"../SysTickInts.c" \
 "../TA3InputCapture.c" \
 "../Tachometer.c" \
 "../TimerA1.c" \
