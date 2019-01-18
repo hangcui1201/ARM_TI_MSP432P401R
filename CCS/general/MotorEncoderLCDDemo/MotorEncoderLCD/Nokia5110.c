@@ -227,8 +227,6 @@ void static lcdcommandwrite(uint8_t command){
   while((EUSCI_A3->STATW&0x0001)==0x0001){};   // UCBUSY, wait until SPI not busy
 //  dummy = UCA3->RXBUF;                         // response meaningless here
 }
-
-
 void Testlcdcommandwrite(void){
   while(1){
     lcdcommandwrite(0x21);

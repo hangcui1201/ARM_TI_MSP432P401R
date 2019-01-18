@@ -54,6 +54,7 @@ policies, either expressed or implied, of the FreeBSD Project.
 #include "SysTickInts.h"
 #include "Tachometer.h"
 #include "Reflectance.h"
+#include "TA3InputCapture.h"
 
 
 #define OUTUART 1
@@ -62,7 +63,9 @@ policies, either expressed or implied, of the FreeBSD Project.
 
 volatile uint32_t nr,nc,nl;
 volatile uint32_t ADCflag; // Set every 500us on ADC sample
+
 volatile uint32_t ControllerFlag; // set every 10ms on controller execution
+
 int32_t UR, UL;  // PWM duty 0 to 14,998
 int32_t Left,Center,Right; // IR distances in mm
 int32_t Mode=0; // 0 stop, 1 run
